@@ -1,8 +1,10 @@
 // ignore_for_file: use_build_context_synchronously, avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mobileuas/api/http_helper.dart';
 import '../components/chek_have_account.dart';
 import '../screen/login.dart';
+import '../api/http_helper.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -16,6 +18,20 @@ class _Register extends State<Register> {
   TextEditingController etName = TextEditingController();
   TextEditingController etEmail = TextEditingController();
   TextEditingController etPassword = TextEditingController();
+
+  doRegister() async {
+    final name = etName.text;
+    final email = etEmail.text;
+    final password = etPassword.text;
+    const deviceId = "12345";
+    final response =
+        await HttpHelper().register(name, email, password, deviceId);
+    print(response.body);
+    Navigator.pushNamed(
+      context,
+      '/login',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,14 +137,14 @@ class _Register extends State<Register> {
                       filled: true,
                       fillColor: Colors.white,
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red.shade100),
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(255, 211, 205, 255)),
                         borderRadius: BorderRadius.circular(50),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          width: 1.5,
-                          color: Colors.red.shade100,
-                        ),
+                            width: 1.5,
+                            color: Color.fromARGB(255, 205, 208, 255)),
                         borderRadius: BorderRadius.circular(50),
                       ),
                     ),
@@ -178,13 +194,14 @@ class _Register extends State<Register> {
                       filled: true,
                       fillColor: Colors.white,
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red.shade100),
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(255, 218, 205, 255)),
                         borderRadius: BorderRadius.circular(50),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: 1.5,
-                          color: Colors.red.shade100,
+                          color: Color.fromARGB(255, 215, 205, 255),
                         ),
                         borderRadius: BorderRadius.circular(50),
                       ),
@@ -207,7 +224,9 @@ class _Register extends State<Register> {
                           borderRadius: BorderRadius.circular(50),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        doRegister();
+                      },
                       child: const Text(
                         "Register",
                         style: TextStyle(

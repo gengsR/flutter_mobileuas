@@ -2,6 +2,10 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobileuas/api/http_helper.dart';
+// ignore: unused_import
+import 'package:flutter_mobileuas/components/check_have%20_account.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../components/chek_have_account.dart';
 import '../screen/registrasi.dart';
 
@@ -16,6 +20,30 @@ class _Login extends State<Login> {
 
   TextEditingController etEmail = TextEditingController();
   TextEditingController etPassword = TextEditingController();
+
+Future doLogin() async {
+    final email = etEmail.text;
+    final password = etPassword.text;
+    const deviceId = "12345";
+    final response = await HttpHelper().login(email, password, deviceId);
+    print(response.body);
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    const key = 'token';
+    final value = pref.get(key);
+    final token = value;
+    if (token == null) {
+      Navigator.pushNamed(
+        context,
+        '/login',
+      );
+    } else {
+      Navigator.pushNamed(
+        context,
+        '/home',
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,13 +111,14 @@ class _Login extends State<Login> {
                       filled: true,
                       fillColor: Colors.white,
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red.shade100),
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(255, 213, 205, 255)),
                         borderRadius: BorderRadius.circular(50),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: 1.5,
-                          color: Colors.red.shade100,
+                          color: Color.fromARGB(255, 205, 207, 255),
                         ),
                         borderRadius: BorderRadius.circular(50),
                       ),
@@ -170,7 +199,9 @@ class _Login extends State<Login> {
                           borderRadius: BorderRadius.circular(50),
                         ),
                       ),
-                      onPressed: () async {},
+                      onPressed: () async {
+                        await doLogin();
+                      },
                       child: const Text(
                         "Login",
                         style: TextStyle(
