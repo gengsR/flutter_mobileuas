@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobileuas/api/http_helper.dart';
 // ignore: unused_import
-import 'package:flutter_mobileuas/components/check_have%20_account.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../components/chek_have_account.dart';
 import '../screen/registrasi.dart';
@@ -69,10 +68,10 @@ Future doLogin() async {
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 50,
-                    color: Color.fromARGB(255, 0, 1, 4),
+                    color: Color.fromARGB(255, 3, 64, 244),
                     shadows: [
                       Shadow(
-                        color: Color.fromARGB(255, 3, 64, 244),
+                        color: Color.fromARGB(255, 249, 249, 249),
                         blurRadius: 10,
                         offset: const Offset(4.0, 4.0),
                       ),

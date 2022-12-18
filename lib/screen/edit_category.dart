@@ -1,21 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobileuas/api/http_helper.dart';
+import 'package:flutter_mobileuas/components/category_models.dart';
+
+import 'home.dart';
 
 class editCategory extends StatefulWidget {
-  const editCategory({super.key});
+  const editCategory({super.key, required this.category});
 
+  final Category category;
   @override
   State<editCategory> createState() => _editCategoryState();
 }
 
 class _editCategoryState extends State<editCategory> {
-  TextEditingController etCategory = TextEditingController();
+  TextEditingController? etCategory;
+
+  doEditCategory() async {
+    final name = etCategory?.text;
+    final response = await HttpHelper().editCategory(widget.category, name!);
+    print(response.body);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Home()),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    etCategory = TextEditingController(text: widget.category.name);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Category'),
-        backgroundColor: Color.fromARGB(255, 41, 28, 183),
+        backgroundColor: Color.fromARGB(255, 28, 46, 183),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -45,13 +66,13 @@ class _editCategoryState extends State<editCategory> {
                   filled: true,
                   fillColor: Colors.white,
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color.fromARGB(255, 205, 220, 255)),
+                    borderSide: BorderSide(color: Color.fromARGB(255, 221, 205, 255)),
                     borderRadius: BorderRadius.circular(50),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                       width: 1.5,
-                      color: Color.fromARGB(255, 205, 229, 255),
+                      color: Color.fromARGB(255, 208, 205, 255),
                     ),
                     borderRadius: BorderRadius.circular(50),
                   ),
@@ -65,17 +86,14 @@ class _editCategoryState extends State<editCategory> {
                 height: 45,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 28, 38, 183),
+                    backgroundColor: Color.fromARGB(255, 49, 28, 183),
                     elevation: 5,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/home',
-                    );
+                    doEditCategory();
                   },
                   child: const Text(
                     "Edit Category",

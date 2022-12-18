@@ -2,8 +2,13 @@
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobileuas/components/category_models.dart';
+import 'package:flutter_mobileuas/screen/edit_category.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../api/http_helper.dart';
+import '../api/category_service.dart';
+
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -32,7 +37,30 @@ class _Home extends State<Home> {
       email = '$value2';
     });
   }
-
+  getKategori() async {
+    final response = await HttpHelper().getKategori();
+    var dataResponse = jsonDecode(response.body);
+    setState(() {
+      var listRespon = dataResponse['data'];
+      for (var i = 0; i < listRespon.length; i++) {
+        listCategory.add(Category.fromJson(listRespon[i]));
+      }
+    });
+  }
+  doAddCategory() async {
+    final name = etCategory.text;
+    final response = await CategoryService().addCategory(name);
+    print(response.body);
+    listCategory.clear();
+    getKategori();
+    etCategory.clear();
+  }
+   @override
+  void initState() {
+    getPref();
+    super.initState();
+    getKategori();
+  }
 
   logOut() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -43,57 +71,38 @@ class _Home extends State<Home> {
     final response = await HttpHelper().logout(token);
     print(response.body);
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Color.fromARGB(255, 28, 44, 183),
+      backgroundColor: Color.fromARGB(255, 28, 46, 183),
       body: Column(
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 28, 41, 183),
+              color: Color.fromARGB(255, 28, 46, 183),
             ),
             height: 180,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 35, horizontal: 25),
-                  child: Text(
-                    'Dashboard',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 29,
-                      fontFamily: 'Raleway',
-                      shadows: [
-                        Shadow(
-                          color: Color.fromARGB(255, 115, 128, 229),
-                          blurRadius: 6,
-                          offset: const Offset(4.0, 4.0),
-                        ),
-                      ],
-                    ),
-                  ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 25, horizontal: 25),
                 ),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 25),
+                      const EdgeInsets.symmetric(vertical: 25, horizontal: 25),
                   child: Align(
-                    alignment: Alignment.centerLeft,
+                    alignment: Alignment.center,
                     child: Text(
                       'Welcome $name',
                       style: TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 25,
                         fontFamily: 'Raleway',
                         shadows: [
                           Shadow(
-                            color: Color.fromARGB(255, 115, 136, 229),
+                            color: Color.fromARGB(255, 28, 46, 183),
                             blurRadius: 6,
                             offset: const Offset(4.0, 4.0),
                           ),
@@ -107,7 +116,7 @@ class _Home extends State<Home> {
                     horizontal: 30,
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Align(
                         alignment: Alignment.centerLeft,
@@ -172,13 +181,15 @@ class _Home extends State<Home> {
                   margin: const EdgeInsets.fromLTRB(0, 8, 12, 8),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 31, 28, 183),
+                      backgroundColor: Color.fromARGB(255, 28, 36, 183),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
                     ),
                     child: const Text("Add"),
-                    onPressed: () {},
+                    onPressed: () {
+                      doAddCategory();
+                    },
                   ),
                 ),
               ),
@@ -187,7 +198,7 @@ class _Home extends State<Home> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.purple.shade50,
+                color: Color.fromARGB(255, 255, 255, 255),
                 borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(10.0),
                   topLeft: Radius.circular(10.0),
@@ -200,7 +211,7 @@ class _Home extends State<Home> {
                   return Dismissible(
                     key: UniqueKey(),
                     background: Container(
-                      color: Colors.greenAccent,
+                      color: Color.fromARGB(255, 188, 199, 243),
                       child: Padding(
                         padding: const EdgeInsets.all(15),
                         child: Row(
@@ -214,7 +225,7 @@ class _Home extends State<Home> {
                       ),
                     ),
                     secondaryBackground: Container(
-                      color: Color.fromARGB(255, 85, 82, 255),
+                      color: Color.fromARGB(255, 82, 91, 255),
                       child: Padding(
                         padding: const EdgeInsets.all(15),
                         child: Row(
@@ -228,6 +239,20 @@ class _Home extends State<Home> {
                         ),
                       ),
                     ),
+                    onDismissed: (DismissDirection direction) async {
+                      if (direction == DismissDirection.startToEnd) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  editCategory(category: listCategory[index]),
+                            ));
+                      } else {
+                        final response = await HttpHelper()
+                            .deleteCategory(listCategory[index]);
+                        print(response.body);
+                      }
+                    },
                     child: Container(
                       margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                       decoration: BoxDecoration(
@@ -266,3 +291,7 @@ class _Home extends State<Home> {
     );
   }
 }
+
+  
+  
+

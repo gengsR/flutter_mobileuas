@@ -4,10 +4,10 @@ import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:flutter_mobileuas/components/category_models.dart';
 
 class HttpHelper {
-  final String _baseUrl = 'http://192.168.20.131:8000/api/';
+  final String _baseUrl = 'http://192.168.43.156:8000/api/';
   final String token = '';
 
   Future<Response> login(String email, String password, String deviceId) async {
@@ -75,8 +75,6 @@ class HttpHelper {
 
   _save(String key, String data) async {
     final prefs = await SharedPreferences.getInstance();
-    // const key = 'token';
-    // final value = token;
     prefs.setString(key, data);
   }
 
@@ -86,6 +84,7 @@ class HttpHelper {
     final value = prefs.get(key) ?? 0;
     print('read : $value');
   }
+
   Future<Response> requestAddCategory(String name) async {
     var url = Uri.parse(_baseUrl + 'category');
     final prefs = await SharedPreferences.getInstance();
@@ -104,4 +103,39 @@ class HttpHelper {
     );
     return response;
   }
+   Future<Response> deleteCategory(Category category) async {
+    final url = Uri.parse(_baseUrl + 'category/${category.id}');
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    const key = 'token';
+    final value = pref.get(key);
+    final token = value;
+    final headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + '$token',
+    };
+
+    final response = await delete(url, headers: headers);
+    return response;
+  }
+  Future<Response> editCategory(Category category, String name) async {
+    final url = Uri.parse(_baseUrl + 'category/${category.id}');
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    const key = 'token';
+    final value = pref.get(key);
+    final token = value;
+    final body = {
+      'name': name,
+    };
+    final headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + '$token',
+    };
+
+    final response = await put(url, body: body, headers: headers);
+
+    print(response.body);
+    print(response.statusCode);
+    return response;
+  }
 }
+

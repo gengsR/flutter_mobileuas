@@ -36,7 +36,7 @@ class _Register extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 174, 174, 234),
+      backgroundColor: Color.fromARGB(255, 254, 254, 255),
       body: Column(
         children: [
           Expanded(
