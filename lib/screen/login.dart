@@ -48,7 +48,7 @@ Future doLogin() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 174, 174, 234),
+      backgroundColor: Color.fromARGB(255, 245, 245, 248),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

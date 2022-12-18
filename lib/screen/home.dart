@@ -16,6 +16,7 @@ class _Home extends State<Home> {
   String name = '';
   String email = '';
   List listCategory = [];
+  TextEditingController etCategory = TextEditingController();
 
   getPref() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -146,6 +147,43 @@ class _Home extends State<Home> {
           const SizedBox(
             height: 20,
           ),
+          Container(
+            margin: const EdgeInsets.all(16),
+            child: TextFormField(
+              controller: etCategory,
+              decoration: InputDecoration(
+                hintText: "Input Your Categories Name",
+                hintStyle: const TextStyle(fontFamily: 'Raleway'),
+                filled: true,
+                fillColor: Colors.white,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  borderSide: const BorderSide(
+                    color: Colors.white,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Colors.white,
+                  ),
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                suffixIcon: Container(
+                  margin: const EdgeInsets.fromLTRB(0, 8, 12, 8),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(255, 31, 28, 183),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    child: const Text("Add"),
+                    onPressed: () {},
+                  ),
+                ),
+              ),
+            ),
+          ),
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -176,7 +214,7 @@ class _Home extends State<Home> {
                       ),
                     ),
                     secondaryBackground: Container(
-                      color: Colors.redAccent,
+                      color: Color.fromARGB(255, 85, 82, 255),
                       child: Padding(
                         padding: const EdgeInsets.all(15),
                         child: Row(
